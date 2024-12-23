@@ -53,9 +53,10 @@ def get_data(instrument = 'ETH-PERPETUAL', resolution = 60, length_of_data = 400
         }
 
         response = json.loads(asyncio.get_event_loop().run_until_complete(call_api(json.dumps(msg))))
-        df2 = pd.DataFrame(response['result'])
-
-        df = pd.concat([df2,df], ignore_index=True)
+        
+        if 'result' in response.keys():
+            df2 = pd.DataFrame(response['result'])
+            df = pd.concat([df2,df], ignore_index=True)
 
     return df
 
@@ -77,13 +78,15 @@ def get_data_current(instrument, resolution = 60, lookback = 500):
         }
     
     response = json.loads(asyncio.get_event_loop().run_until_complete(call_api(json.dumps(msg))))
-    df = pd.DataFrame(response['result'])
+
+    if 'result' in response.keys():
+        df = pd.DataFrame(response['result'])
 
     return df
 
 if __name__ == "__main__":
 
-    df = get_data(instrument='BTC-PERPETUAL', resolution=60, length_of_data=75000)
+    df = get_data(instrument='BTC-PERPETUAL', resolution=60, length_of_data=50000)
     df.to_csv('BTC-PERP_60min.csv')
     print(df.head())
     print(df.tail())
